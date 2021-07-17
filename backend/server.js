@@ -2,8 +2,9 @@
     const bodyParser = require('body-parser');
     const mongoose = require('mongoose');
 
-    const PORT = process.env.PORT || 3001;
+    const userRouter = require('./routes/users');
 
+    const PORT = process.env.PORT || 3001;
     const app = express();
 
     app.use(
@@ -25,7 +26,8 @@
     .then(() => console.log("Connected to database successfully"))
     .catch(err => console.log(err));
  
-
+    app.use('/user', userRouter);
+    
     app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`);
     });
