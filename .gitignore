@@ -2,3 +2,5 @@ node_modules/
 .DS_Store
 backend/config
 frontend/pickup-mobile/config
+frontend/pickup-mobile/.expo
+frontend/pickup-mobile/.expo-shared
