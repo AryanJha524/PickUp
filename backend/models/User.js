@@ -6,6 +6,10 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
+    userType: { // LEADER, CAPTAIN, or PLAYER   
+        type: String,
+        required: true
+    }
 });
 
 module.exports = User = mongoose.model("User", UserSchema);

@@ -9,7 +9,8 @@ router.post('/register', (req, res) => {
         }
         else {
             const newUser = new User({
-                firebaseUID: req.body.firebaseUID
+                firebaseUID: req.body.firebaseUID,
+                userType: req.body.userType
             })
             .save()
             .then(user => res.status(200).json(user))
