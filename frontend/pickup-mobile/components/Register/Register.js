@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { Chip } from 'react-native-paper';
 import { useHistory } from "react-router-dom";
 import Firebase from '../../config/firebase';
-import { ChooseUserRole } from './ChooseUserRole';
 
 export const Register = () => {
 
@@ -10,15 +10,28 @@ export const Register = () => {
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
     const [password2, setPassword2] = useState(null);
-    const [userUID, setUserUID] = useState(null);
-    const [firebaseUserCreated, setFirebaseUserCreated] = useState(false);
+    const [userType, setUserType] = useState("player");
+
+    const api_url = 'https://localhost:3001/';
+
+    const createMongoUser = async (uobject) => {
+        const response = await fetch(api_url + '/user/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(uobject),
+        })
+        return await response.json();
+    }
 
     const doRegister = (email, password) => {
         Firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(user => {
-                setUserUID(user.user.UID);
-                setFirebaseUserCreated(true);
-            })
+                createMongoUser({uid: user.user.id, utype: userType})
+                .then(res => console.log(res))
+                .catch(err => console.log(err))
+            });
     }
 
     const handlePress = () => {
@@ -43,39 +56,32 @@ export const Register = () => {
     }
 
     return (
-        <View>
-            {
-                firebaseUserCreated
-                    ?
-                    <View>
-                        <ChooseUserRole />
-                    </View>
-                    :
-                    <View>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter your email"
-                            onChangeText={handleEmail}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter a password"
-                            secureTextEntry={true}
-                            onChangeText={handlePassword}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Confirm your password"
-                            secureTextEntry={true}
-                            onChangeText={handlePassword2}
-                        />
-                        <Button
-                            title="Register an Account"
-                            onPress={handlePress}
-                        />
-                    </View>
-            }
-        </View>
+            <View>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter your email"
+                    onChangeText={handleEmail}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter a password"
+                    secureTextEntry={true}
+                    onChangeText={handlePassword}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Confirm your password"
+                    secureTextEntry={true}
+                    onChangeText={handlePassword2}
+                />
+                <Chip>Player</Chip>
+                <Chip>Captain</Chip> 
+                <Chip>Leader</Chip>
+                <Button
+                    title="Register an Account"
+                    onPress={handlePress}
+                />
+            </View>
     )
 }
 
